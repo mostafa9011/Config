@@ -1,33 +1,16 @@
-import 'dart:async';
-import 'dart:convert';
-import 'dart:developer';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 
-class Api {
-  Future<dynamic> get({required String url, String? token}) async {
-    Map<String, String> headers = {};
-    if (token != null) {
-      headers.addAll(
-        {
-          'Authorization': 'Bearer $token',
-          //Content-Type , Accept have a value by default..
-        },
-      );
-    }
-    http.Response response = await http.get(Uri.parse(url), headers: headers);
+class ApiService {
+  final Dio dio;
 
-    if (response.statusCode == 200) {
-      List<dynamic> data = jsonDecode(response.body);
-      return data;
-    } else {
-      throw Exception(
-          'there is a problem whith a status code = ${response.statusCode}');
-    }
-  }
+  // declare your baseUrl
+  static const String baseUrl = '';
 
-  Future<dynamic> post({
-    required String url,
-    required dynamic body,
+  ApiService(this.dio);
+
+  //get method.
+  Future<Map<String, dynamic>> get({
+    required String endPoint,
     String? token,
   }) async {
     Map<String, String> headers = {};
@@ -39,25 +22,23 @@ class Api {
         },
       );
     }
-    http.Response response = await http.post(
-      Uri.parse(url),
-      body: body,
-      headers: headers,
+
+    Response response = await dio.get(
+      '$baseUrl$endPoint',
+      options: Options(
+        headers: headers,
+      ),
     );
 
-    if (response.statusCode == 200) {
-      Map<String, dynamic> data = jsonDecode(response.body);
-      return data;
-    } else {
-      throw Exception(
-        'there is a problem whith a status code = ${response.statusCode},with body ${jsonDecode(response.body)}',
-      );
-    }
+    return response.data;
   }
 
-  Future<dynamic> ubdate(
-      {required String url, required dynamic body, String? token}) async {
-    log('url = $url  body = $body token = $token');
+  //post method.
+  Future<Map<String, dynamic>> post({
+    required String endPoint,
+    required dynamic data,
+    String? token,
+  }) async {
     Map<String, String> headers = {};
     if (token != null) {
       headers.addAll(
@@ -68,20 +49,41 @@ class Api {
       );
     }
 
-    http.Response response = await http.put(
-      Uri.parse(url),
-      body: body,
-      headers: headers,
+    Response response = await dio.post(
+      '$baseUrl$endPoint',
+      data: data,
+      options: Options(
+        headers: headers,
+      ),
     );
 
-    if (response.statusCode == 200) {
-      Map<String, dynamic> data = jsonDecode(response.body);
+    return response.data;
+  }
 
-      return data;
-    } else {
-      throw Exception(
-        'there is a problem whith a status code = ${response.statusCode},with body ${jsonDecode(response.body)}',
+  //update methodز
+  Future<Map<String, dynamic>> update({
+    required String endPoint,
+    required dynamic data,
+    String? token,
+  }) async {
+    Map<String, String> headers = {};
+    if (token != null) {
+      headers.addAll(
+        {
+          'Authorization': 'Bearer $token',
+          //Content-Type , Accept have a value by default..
+        },
       );
     }
+
+    Response response = await dio.post(
+      '$baseUrl$endPoint',
+      data: data,
+      options: Options(
+        headers: headers,
+      ),
+    );
+
+    return response.data;
   }
 }
