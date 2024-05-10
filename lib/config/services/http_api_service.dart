@@ -21,8 +21,7 @@ class HttpApiService {
       return data;
     } else {
       throw Exception(
-        'there is a problem whith a status code = ${response.statusCode}',
-      );
+          'there is a problem whith a status code = ${response.statusCode}');
     }
   }
 
