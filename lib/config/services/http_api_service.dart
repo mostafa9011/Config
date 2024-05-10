@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:http/http.dart' as http;
 
-class Api {
+class HttpApiService {
   Future<dynamic> get({required String url, String? token}) async {
     Map<String, String> headers = {};
     if (token != null) {
@@ -21,7 +21,8 @@ class Api {
       return data;
     } else {
       throw Exception(
-          'there is a problem whith a status code = ${response.statusCode}');
+        'there is a problem whith a status code = ${response.statusCode}',
+      );
     }
   }
 
